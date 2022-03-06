@@ -1,5 +1,6 @@
 package com.example.jwtcleanspring.service;
 
+import com.example.jwtcleanspring.exception.exceptions.JwtHandlerException;
 import com.example.jwtcleanspring.model.JWT;
 import com.example.jwtcleanspring.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +31,7 @@ public class JWTProvider {
     @SneakyThrows
     private String calculateSignature(final JWT jwt) {
         if(jwt.getPayload() == null || jwt.getHeader() == null) {
-            throw new IllegalArgumentException("not enough data for generate token signature");
+            throw new JwtHandlerException("not enough data for generate token signature");
         }
         final String headerEncode = Base64Utils.encodeToString(objectMapper.writeValueAsString(jwt.getHeader()).getBytes());
         final String payloadEncode = Base64Utils.encodeToString(objectMapper.writeValueAsString(jwt.getPayload()).getBytes());

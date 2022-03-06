@@ -1,6 +1,7 @@
 package com.example.jwtcleanspring.service;
 
 import com.example.jwtcleanspring.dto.LoginDto;
+import com.example.jwtcleanspring.exception.exceptions.InvalidLoginException;
 import com.example.jwtcleanspring.model.JWT;
 import com.example.jwtcleanspring.model.User;
 import com.example.jwtcleanspring.repository.UserRepository;
@@ -34,7 +35,7 @@ public class UserService {
     public ResponseEntity<String> verifyUser(LoginDto dto) {
         User user = userRepository.findByUsername(dto.getUsername());
         if (!user.getPassword().equals(dto.getPassword())) {
-            throw new IllegalArgumentException("invalid password");
+            throw new InvalidLoginException("invalid password");
         }
         JWT jwt = jwtProvider.extractData(user);
         String token = jwtProvider.generateToken(jwt);

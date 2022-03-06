@@ -1,6 +1,8 @@
 package com.example.jwtcleanspring.aspect;
 
 import com.example.jwtcleanspring.annotation.Auth;
+import com.example.jwtcleanspring.exception.exceptions.NoPermissionException;
+import com.example.jwtcleanspring.exception.exceptions.UnauthorizedException;
 import com.example.jwtcleanspring.model.JWT;
 import com.example.jwtcleanspring.model.User;
 import com.example.jwtcleanspring.model.enums.Role;
@@ -42,7 +44,7 @@ public class AuthHandler {
         String header = request.getHeader(AUTHORIZATION);
 
         if (header == null) {
-            throw new IllegalAccessException("unauthorized");
+            throw new UnauthorizedException("Unauthorized");
         }
 
         if (header.startsWith(BEARER)) {
@@ -50,15 +52,15 @@ public class AuthHandler {
             JWT jwt = jwtProvider.encodeToken(token);
             User user = userRepository.findByUsername(jwt.getPayload().getUsername());
             if (!jwtProvider.verifyToken(user, token)) {
-                throw new IllegalArgumentException("you token invalid");
+                throw new UnauthorizedException("You token invalid");
             }
             if(hasAccess(roles, jwt.getPayload().getRole())) {
                 return javaPoint.proceed();
             }
-            throw new IllegalAccessException("forbidden check you role");
+            throw new NoPermissionException("Not enough permission, check you role");
         }
 
-        throw new IllegalArgumentException("you auth type not supported");
+        throw new UnauthorizedException("You auth type not supported");
     }
 
     private boolean hasAccess(Role[] roles, Role userRole) {
