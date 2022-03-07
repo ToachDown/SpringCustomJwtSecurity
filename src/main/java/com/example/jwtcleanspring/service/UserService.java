@@ -28,12 +28,9 @@ public class UserService {
         return userRepository.getAllUsers();
     }
 
-    public User getUserByUsername (String username) {
-        return userRepository.findByUsername(username);
-    }
-
     public ResponseEntity<String> verifyUser(LoginDto dto) {
-        User user = userRepository.findByUsername(dto.getUsername());
+        User user = userRepository.findByUsername(dto.getUsername())
+                .orElseThrow(() -> new InvalidLoginException("invalid username"));
         if (!user.getPassword().equals(dto.getPassword())) {
             throw new InvalidLoginException("invalid password");
         }

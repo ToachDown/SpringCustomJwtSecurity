@@ -1,10 +1,8 @@
 package com.example.jwtcleanspring.repository;
 
-import com.example.jwtcleanspring.exception.exceptions.InvalidLoginException;
 import com.example.jwtcleanspring.model.User;
 import com.example.jwtcleanspring.model.enums.Role;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.*;
 
@@ -25,8 +23,8 @@ public class UserRepository {
         return users;
     }
 
-    public User findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return users.stream().filter(user -> user.getUsername().equals(username))
-                .findFirst().orElseThrow(() -> new InvalidLoginException("invalid username"));
+                .findFirst();
     }
 }

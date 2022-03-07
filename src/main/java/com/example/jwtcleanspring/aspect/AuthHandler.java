@@ -1,6 +1,7 @@
 package com.example.jwtcleanspring.aspect;
 
 import com.example.jwtcleanspring.annotation.Auth;
+import com.example.jwtcleanspring.exception.exceptions.InvalidLoginException;
 import com.example.jwtcleanspring.exception.exceptions.NoPermissionException;
 import com.example.jwtcleanspring.exception.exceptions.UnauthorizedException;
 import com.example.jwtcleanspring.model.JWT;
@@ -49,7 +50,8 @@ public class AuthHandler {
         if (header.startsWith(BEARER)) {
             String token = header.substring(BEARER.length());
             JWT jwt = jwtProvider.encodeToken(token);
-            User user = userRepository.findByUsername(jwt.getPayload().getUsername());
+            User user = userRepository.findByUsername(jwt.getPayload().getUsername())
+                    .orElseThrow(() -> new UnauthorizedException("you token invalid"));
             if (!jwtProvider.verifyToken(user, token)) {
                 throw new UnauthorizedException("You token invalid");
             }
