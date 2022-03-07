@@ -1,6 +1,8 @@
 package com.example.jwtcleanspring.controller;
 
+import com.example.jwtcleanspring.annotation.Auth;
 import com.example.jwtcleanspring.model.Food;
+import com.example.jwtcleanspring.model.enums.Role;
 import com.example.jwtcleanspring.service.FoodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ public class FoodController {
         this.foodService = foodService;
     }
 
+    @Auth(roles = Role.USER)
     @GetMapping("/foods")
     public List<Food> getAllFoods () {
         return foodService.getFood();
