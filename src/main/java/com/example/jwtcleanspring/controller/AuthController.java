@@ -30,7 +30,7 @@ public class AuthController {
 
     @Auth(roles = {Role.ADMIN})
     @GetMapping("/users")
-    public List<User> getUsers (HttpServletRequest request) {
+    public List<User> getUsers () {
         return userService.getUsers();
     }
 }

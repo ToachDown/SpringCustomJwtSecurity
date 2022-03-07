@@ -28,6 +28,8 @@ public class AuthHandler {
 
     private final JWTProvider jwtProvider;
     private final UserRepository userRepository;
+    @Autowired
+    private HttpServletRequest request;
 
     @Autowired
     public AuthHandler(JWTProvider jwtProvider, UserRepository userRepository) {
@@ -38,9 +40,6 @@ public class AuthHandler {
     @Around("@annotation(com.example.jwtcleanspring.annotation.Auth)")
     public Object checkToken(ProceedingJoinPoint javaPoint) throws Throwable {
         Role[] roles = ((MethodSignature) javaPoint.getSignature()).getMethod().getAnnotation(Auth.class).roles();
-        HttpServletRequest request = (HttpServletRequest) Arrays.stream(javaPoint.getArgs())
-                .filter(arg -> arg instanceof HttpServletRequest)
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("@Auth not found HttpServlet in methods args"));
         String header = request.getHeader(AUTHORIZATION);
 
         if (header == null) {
